@@ -9,23 +9,13 @@ username="markus"
 apt install sudo
 sudo adduser $username sudo
 
-# https://unix.stackexchange.com/questions/32793/how-to-remove-gnome-games-package-without-removing-other-packages
-# https://unix.stackexchange.com/questions/691386/remove-preinstalled-gnome-applications
-printHeader "removing games"
-sudo apt remove gnome-games -y
-sudo apt remove gnome-klotski gnome-mahjongg gnome-mines gnome-nibbles gnome-robots gnome-nibbles gnome-sudoku hitori lightsoff quadrapassel iagno tali gnome-taquin gnome-tetravex swell-foop -y
-printHeader "removing applications"
-sudo apt remove gnome-characters gnome-calculator gnome-music cheese gnome-calendar gnome-contacts gnome-music gnome-maps gnome-clocks simple-scan evince gnome-sound-recorder rhythmbox shotwell yelp evolution gnome-logs file-roller gnome-disk-utility baobab gnome-font-viewer seahorse gnome-system-monitor -y
-sudo apt remove im-config transmission-gtk synaptic software-properties-gtk -y
-# to continue using gnome keep network-manager-gnome
-sudo apt autoremove -y
-
 # https://youtu.be/h8opVWdDPXM?t=278
 sudo apt install i3 lightdm x11-xserver-utils nm-tray -y
 # lxappearance to switch to dark mode (might require installation of gnome-themes-extra)
 # lxappearance edits ~/.config/gtk-3.0/settings.ini
 sudo apt install firefox-esr lxappearance gnome-terminal build-essential git curl -y
-sudo apt install freecad leocad ldraw-parts texstudio keepassxc feh mpv -y
+sudo apt install freecad leocad ldraw-parts texstudio keepassxc feh mpv zip -y
+sudo apt install scrot -y
 
 # https://wiki.debian.org/NvidiaGraphicsDrivers#Debian_12_.22Bookworm.22
 printHeader "installing nvidia drivers"
@@ -40,40 +30,14 @@ else
 	sudo apt install nvidia-driver firmware-misc-nonfree
 fi
 
-printHeader "installing PyCharm"
-if find "/home/${username}/.local/share" -maxdepth 1 -type "d" -name "pycharm-*" | grep -q .; then
-	echo "PyCharm is already installed!"
-else
-	echo "Installing PyCharm..."
-	original_dir=$( pwd )
-	cd "/home/${username}/.local/share/"
-	wget https://download.jetbrains.com/python/pycharm-professional-2024.1.4.tar.gz
-	tar -xf pycharm-professional-2024.1.4.tar.gz
-	rm pycharm-professional-2024.1.4.tar.gz
-	cd $original_dir
-fi
-if ! find "/usr/local/bin" -maxdepth 1 -type "f" -name "pycharm" | grep -q .; then
-	file="/usr/local/bin/pycharm"
-	echo "creating pycharm starter file at ${file}"
-	touch $file
-	echo "#!/bin/bash">>$file
-	echo "exec /home/${username}/.local/share/pycharm-2024.1.4/bin/pycharm.sh">>$file
-        sudo chmod +x $file
-fi
-
-# https://code.visualstudio.com/docs/supporting/faq#_how-do-i-find-the-version
-printHeader "installing vscode"
-if [ $(which code) = "/usr/bin/code" ]; then
-	echo "vscode already installed"
-else
-	original_dir=$( pwd )
-	cd "/home/${username}/Downloads"
-	installation_file="vscode.deb"
-	wget https://update.code.visualstudio.com/latest/linux-deb-x64/stable -O $installation_file
-	sudo apt install "./${installation_file}"
-	rm $installation_file
-	cd $original_dir
-fi
+# https://vscodium.com/#install-on-debian-ubuntu-deb-package
+printHeader "installing VSCodium"
+wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
+    | gpg --dearmor \
+    | sudo dd of=/usr/share/keyrings/vscodium-archive-keyring.gpg
+echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main' \
+    | sudo tee /etc/apt/sources.list.d/vscodium.list
+sudo apt install codium -y
 
 printHeader "installing signal"
 wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > signal-desktop-keyring.gpg
