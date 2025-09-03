@@ -1,21 +1,46 @@
 #!/bin/bash
 
 function printHeader () {
-echo -e "\e[34m${1}\e[0m"
+    echo -e "\e[34m${1}\e[0m"
 }
 
-username="markus"
+# the following sudo install and configuration is not necessary if
+# you opted to lock the root user and automatically add your user
+# to the sudoers file
 # https://wiki.debian.org/sudo?action=show&redirect=Sudo
-apt install sudo
-sudo adduser $username sudo
+# username="markus"
+# apt install sudo
+# sudo adduser $username sudo
 
 # https://youtu.be/h8opVWdDPXM?t=278
-sudo apt install i3 lightdm x11-xserver-utils nm-tray -y
+sudo apt install i3 lightdm -y
 # lxappearance to switch to dark mode (might require installation of gnome-themes-extra)
 # lxappearance edits ~/.config/gtk-3.0/settings.ini
-sudo apt install firefox-esr lxappearance gnome-terminal build-essential git curl -y
-sudo apt install freecad ldraw-parts texstudio keepassxc feh mpv zip -y
-sudo apt install scrot timewarrior -y
+sudo apt install \
+	firefox-esr\
+	thunderbird\
+    lxappearance\
+    alacritty\
+    build-essential\
+    git\
+    curl\
+    vim\
+    freecad\
+    ldraw-parts\
+    texstudio\
+    keepassxc\
+    feh\
+    mpv\
+    zip\
+	scrot\
+    timewarrior\
+    -y
+
+sudo apt install vim -y
+sudo apt install nodejs -y  # for vim plugins
+sudo apt install clangd -y  # for vim C++ language server
+sudo apt install vim-gtk3 -y  # for vim copying to things like firefox
+
 
 # https://wiki.debian.org/NvidiaGraphicsDrivers#Debian_12_.22Bookworm.22
 printHeader "installing nvidia drivers"
@@ -55,3 +80,7 @@ printHeader "installing spotify"
 curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
 echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 sudo apt-get update && sudo apt-get install spotify-client
+
+# vimplug see: https://github.com/junegunn/vim-plug?tab=readme-ov-file
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim

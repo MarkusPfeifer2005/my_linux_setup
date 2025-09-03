@@ -1,0 +1,8 @@
+# https://doc.e.foundation/pages/install-adb
+export PATH="$HOME/platform-tools:$PATH"
+
+# for buildozer:
+# https://buildozer.readthedocs.io/en/latest/installation.html#targeting-android
+export PATH=$PATH:~/.local/bin/
+
+export TIMEWARRIORDB=~/timewarrior

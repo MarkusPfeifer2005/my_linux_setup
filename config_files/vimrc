@@ -1,0 +1,67 @@
+set nocompatible
+call plug#begin()
+
+" List your plugins here
+Plug 'joshdick/onedark.vim'
+Plug 'tomasiser/vim-code-dark'
+Plug 'sheerun/vim-polyglot'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'jiangmiao/auto-pairs'
+Plug 'gruvbox-community/gruvbox'
+Plug 'preservim/nerdtree'
+Plug 'Yggdroot/indentLine'
+Plug 'mechatroner/rainbow_csv'
+
+call plug#end()
+
+syntax on
+colorscheme codedark
+set foldmethod=syntax
+filetype plugin indent on
+" use <tab> to trigger completion and navigate to the next complete item
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+
+
+inoremap <c-b> <Esc>:NERDTreeToggle<cr>
+nnoremap <c-b> <Esc>:NERDTreeToggle<cr>
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+" Set cursor shape for Insert mode (I-beam)
+if has('gui_running') || has('termguicolors')
+  let &t_SI = "\<Esc>[6 q"  " I-beam cursor in Insert mode (GUI/true color terminals)
+  let &t_EI = "\<Esc>[2 q"  " Block cursor in Normal mode (GUI/true color terminals)
+else
+  let &t_SI = "\<Esc>[6 q"  " I-beam cursor in Insert mode (terminal)
+  let &t_EI = "\<Esc>[2 q"  " Block cursor in Normal mode (terminal)
+endif
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+
+" Go to definition
+nnoremap <silent> gd :call CocActionAsync('jumpToDefinition')<CR>
+
+" Go to references
+nnoremap <silent> gr :call CocActionAsync('jumpToReferences')<CR>
+
+" Rename symbol
+nnoremap <leader>rn :call CocActionAsync('rename')<CR>
+
+" Show diagnostics (errors/warnings)
+nnoremap <silent> <leader>d :CocList diagnostics<CR>
+
+" Apply code action (quick fix)
+nnoremap <silent> <leader>a :CocList codeActions<CR>
+
