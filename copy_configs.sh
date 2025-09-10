@@ -10,7 +10,7 @@ fi
 # configuring alacritty
 mkdir -p ~/.config/alacritty
 if [ -z "$(ls ~/.config/alacritty)" ]; then
-    cp config_files/alacritty/* ~/.config/alacritty/
+    wget https://raw.githubusercontent.com/alacritty/alacritty-theme/master/themes/blood_moon.toml -O ~/.config/alacritty/alacritty.toml
 fi
 
 # configuring i3

@@ -34,6 +34,7 @@ sudo apt install \
     zip\
 	scrot\
     timewarrior\
+    xournalpp\
     -y
 
 sudo apt install vim -y
@@ -57,15 +58,22 @@ fi
 
 # https://code.visualstudio.com/docs/setup/linux
 printHeader "installing VS Code"
-echo "code code/add-microsoft-repo boolean true" | sudo debconf-set-selections
+#echo "code code/add-microsoft-repo boolean true" | sudo debconf-set-selections
 sudo apt-get install wget gpg
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
-rm -f packages.microsoft.gpg
-sudo apt install apt-transport-https
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+sudo install -D -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft.gpg
+rm -f microsoft.gpg
+sudo cat << EOF > /etc/apt/sources.list.d/vscode.sources
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: amd64,arm64,armhf
+Signed-By: /usr/share/keyrings/microsoft.gpg
+EOF
+sudo apt install apt-transport-https -y
 sudo apt update
-sudo apt install code # or code-insiders
+sudo apt install code -y # or code-insiders
 
 
 printHeader "installing signal"
@@ -73,13 +81,13 @@ wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > signa
 cat signal-desktop-keyring.gpg | sudo tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
 echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' | sudo tee /etc/apt/sources.list.d/signal-xenial.list
 sudo apt update
-sudo apt install signal-desktop
+sudo apt install signal-desktop -y
 
 # https://www.spotify.com/de-en/download/linux/
 printHeader "installing spotify"
 curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
 echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-sudo apt-get update && sudo apt-get install spotify-client
+sudo apt-get update && sudo apt-get install spotify-client -y
 
 # vimplug see: https://github.com/junegunn/vim-plug?tab=readme-ov-file
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
