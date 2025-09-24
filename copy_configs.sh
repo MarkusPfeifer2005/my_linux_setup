@@ -14,8 +14,11 @@ if [ -z "$(ls ~/.config/alacritty)" ]; then
 fi
 
 # configuring i3
-mkdir -p $HOME/.config/i3
-cp config_files/i3/config $HOME/.config/i3/config
+if [ "$XDG_SESSION_TYPE" = "x11" ]
+then
+	mkdir -p $HOME/.config/i3
+	cp config_files/i3/config $HOME/.config/i3/config
+fi
 
 # configure vim
 cp config_files/vimrc ~/.vimrc

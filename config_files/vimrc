@@ -2,15 +2,12 @@ set nocompatible
 call plug#begin()
 
 " List your plugins here
-Plug 'joshdick/onedark.vim'
-Plug 'tomasiser/vim-code-dark'
-Plug 'sheerun/vim-polyglot'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'jiangmiao/auto-pairs'
-Plug 'gruvbox-community/gruvbox'
-Plug 'preservim/nerdtree'
-Plug 'Yggdroot/indentLine'
-Plug 'mechatroner/rainbow_csv'
+Plug 'tomasiser/vim-code-dark'  " Dark color scheme for Vim and vim-airline, inspired by Dark+ in Visual Studio Code 
+Plug 'sheerun/vim-polyglot'  " A solid language pack for Vim. (syntax highlighting)
+Plug 'neoclide/coc.nvim', {'branch': 'release'}  " Nodejs extension host, load extensions like VSCode and host language servers.
+Plug 'jiangmiao/auto-pairs'  " Vim plugin, insert or delete brackets, parens, quotes in pair
+Plug 'preservim/nerdtree'  " A tree explorer plugin for vim. 
+Plug 'Yggdroot/indentLine'  " A vim plugin to display the indention levels with thin vertical lines
 
 call plug#end()
 
@@ -18,50 +15,44 @@ syntax on
 colorscheme codedark
 set foldmethod=syntax
 filetype plugin indent on
-" use <tab> to trigger completion and navigate to the next complete item
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
 
+" === Autocompletion like VSCode / PyCharm ===
+
+" Use <Tab> for trigger completion or navigate
 inoremap <silent><expr> <Tab>
       \ coc#pum#visible() ? coc#pum#next(1) :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
+
+" Use <S-Tab> (Shift-Tab) to go backwards in the popup
+inoremap <silent><expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Press Enter to confirm the selection, or fallback to newline
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
+" Trigger completion manually (like Ctrl+Space in VSCode)
+inoremap <silent><expr> <C-Space> coc#refresh()
 
 inoremap <c-b> <Esc>:NERDTreeToggle<cr>
 nnoremap <c-b> <Esc>:NERDTreeToggle<cr>
+
+" Set cursor shape for Insert mode (I-beam)
+let &t_SI = "\<Esc>[6 q"  " I-beam cursor in Insert mode (GUI/true color terminals)
+let &t_EI = "\<Esc>[2 q"  " Block cursor in Normal mode (GUI/true color terminals)
+
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 set expandtab
 
-" Set cursor shape for Insert mode (I-beam)
-if has('gui_running') || has('termguicolors')
-  let &t_SI = "\<Esc>[6 q"  " I-beam cursor in Insert mode (GUI/true color terminals)
-  let &t_EI = "\<Esc>[2 q"  " Block cursor in Normal mode (GUI/true color terminals)
-else
-  let &t_SI = "\<Esc>[6 q"  " I-beam cursor in Insert mode (terminal)
-  let &t_EI = "\<Esc>[2 q"  " Block cursor in Normal mode (terminal)
-endif
+au BufNewFile,BufRead *.py set tabstop=4
+au BufNewFile,BufRead *.py set softtabstop=4
+au BufNewFile,BufRead *.py set shiftwidth=4
+au BufNewFile,BufRead *.py set textwidth=79
+au BufNewFile,BufRead *.py set expandtab
+au BufNewFile,BufRead *.py set autoindent
+au BufNewFile,BufRead *.py set fileformat=unix
 
-" Use K to show documentation in preview window
-nnoremap <silent> K :call CocActionAsync('doHover')<CR>
-
-" Go to definition
-nnoremap <silent> gd :call CocActionAsync('jumpToDefinition')<CR>
-
-" Go to references
-nnoremap <silent> gr :call CocActionAsync('jumpToReferences')<CR>
-
-" Rename symbol
-nnoremap <leader>rn :call CocActionAsync('rename')<CR>
-
-" Show diagnostics (errors/warnings)
-nnoremap <silent> <leader>d :CocList diagnostics<CR>
-
-" Apply code action (quick fix)
-nnoremap <silent> <leader>a :CocList codeActions<CR>
+let python_highlight_all=1
 

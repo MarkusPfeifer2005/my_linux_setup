@@ -12,8 +12,15 @@ function printHeader () {
 # apt install sudo
 # sudo adduser $username sudo
 
-# https://youtu.be/h8opVWdDPXM?t=278
-sudo apt install i3 lightdm -y
+if [ "$XDG_SESSION_TYPE" = "x11" ]
+then
+    echo "You are on X11!"
+    sudo apt install i3 lightdm -y
+elif [ "$XDG_SESSION_TYPE" = "wayland" ]
+then
+    echo "You are on Wayland!"
+    sudo apt install sway waybar -y
+fi
 # lxappearance to switch to dark mode (might require installation of gnome-themes-extra)
 # lxappearance edits ~/.config/gtk-3.0/settings.ini
 sudo apt install \
@@ -23,8 +30,8 @@ sudo apt install \
     alacritty\
     build-essential\
     git\
+    gh\
     curl\
-    vim\
     freecad\
     ldraw-parts\
     texstudio\
@@ -33,15 +40,19 @@ sudo apt install \
     mpv\
     zip\
 	scrot\
-    timewarrior\
     xournalpp\
     -y
 
 sudo apt install vim -y
-sudo apt install nodejs -y  # for vim plugins
+sudo apt install nodejs npm -y  # for vim plugins
 sudo apt install clangd -y  # for vim C++ language server
 sudo apt install vim-gtk3 -y  # for vim copying to things like firefox
+sudo apt install golang -y  # for vim YouCompleteMe
+vim +"CocInstall -sync coc-clangd coc-pyright|q"  # calls the commands inside of vim
 
+# setup Bluetooth
+sudo apt install pipewire libspa-0.2-bluetooth -y
+sudo apt purge pulseaudio-module-bluetooth -y
 
 # https://wiki.debian.org/NvidiaGraphicsDrivers#Debian_12_.22Bookworm.22
 printHeader "installing nvidia drivers"
